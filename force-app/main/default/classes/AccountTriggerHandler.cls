@@ -7,19 +7,11 @@ public class AccountTriggerHandler extends TriggerHandler {
     }
 
     protected override void afterInsert() {
-        List<Contact> contacts = new List<Contact>();
-        for (Account acc : (List<Account>)Trigger.new) {
-            contacts.add(createNewContact(acc));
-        }
-        insert contacts;
+        processAccounts((List<Account>)Trigger.new);
     }
 
     protected override void afterUpdate() {
-        List<Contact> contacts = new List<Contact>();
-        for (Account acc : (List<Account>)Trigger.new) {
-            contacts.add(createNewContact(acc));
-        }
-        insert contacts;
+        processAccounts((List<Account>)Trigger.new);
     }
 
     protected override void afterDelete() {
@@ -42,6 +34,14 @@ public class AccountTriggerHandler extends TriggerHandler {
             AccountId = acc.Id,
             Email = 'candidate_name@adaptus.com'
         );
+    }
+
+    private void processAccounts(List<Account> accounts) {
+        List<Contact> contacts = new List<Contact>();
+        for (Account acc : accounts) {
+            contacts.add(createNewContact(acc));
+        }
+        insert contacts;
     }
 
     private Task createTaskForDeletedAccount(Account acc) {
