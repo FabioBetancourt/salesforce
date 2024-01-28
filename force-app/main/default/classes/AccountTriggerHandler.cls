@@ -21,8 +21,15 @@ public class AccountTriggerHandler extends TriggerHandler {
         }
         insert contacts;
     }
-    
 
+    protected override void afterDelete() {
+        List<Task> tasks = new List<Task>();
+        for (Account acc : (List<Account>)Trigger.old) {
+            tasks.add(createTaskForDeletedAccount(acc));
+        }
+        insert tasks;
+    }
+    
     private String modifyAccountName(String originalName) {
         String newName = originalName + ' - Adaptus';
         return newName.length() <= 80 ? newName : newName.substring(0, 80);
@@ -34,6 +41,13 @@ public class AccountTriggerHandler extends TriggerHandler {
             LastName = 'Candidate lastname',
             AccountId = acc.Id,
             Email = 'candidate_name@adaptus.com'
+        );
+    }
+
+    private Task createTaskForDeletedAccount(Account acc) {
+        return new Task(
+            Subject = 'Deleted account ' + acc.Name,
+            ActivityDate = Date.today()
         );
     }
 }
