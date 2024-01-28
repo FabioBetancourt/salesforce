@@ -1,5 +1,11 @@
 public class AccountTriggerHandler extends TriggerHandler {
     
+    // This is better to be a custom setting if we want to change it in the future
+    // but for the sake of simplicity we will leave it as a constant
+    private static final String DEFAULT_FIRST_NAME = 'Candidate name';
+    private static final String DEFAULT_LAST_NAME = 'Candidate lastname';
+    private static final String DEFAULT_EMAIL_DOMAIN = 'candidate_name@adaptus.com';
+
     protected override void beforeInsert() {
         for (Account acc : (List<Account>)Trigger.new) {
             acc.Name = modifyAccountName(acc.Name);
@@ -29,10 +35,10 @@ public class AccountTriggerHandler extends TriggerHandler {
 
     private Contact createNewContact(Account acc) {
         return new Contact(
-            FirstName = 'Candidate name',
-            LastName = 'Candidate lastname',
+            FirstName = DEFAULT_FIRST_NAME,
+            LastName = DEFAULT_LAST_NAME,
             AccountId = acc.Id,
-            Email = 'candidate_name@adaptus.com'
+            Email = DEFAULT_EMAIL_DOMAIN
         );
     }
 
